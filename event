@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Bubbling vs Delegation with Bangla Comments</title>
+<style>
+  /* Parent div এর style */
+  #parent, #delegationParent {
+    padding: 20px;
+    border: 2px solid black;
+    margin-bottom: 30px;
+  }
+
+  /* Button এবং list item styling */
+  button, li {
+    margin: 5px;
+    padding: 5px 10px;
+  }
+</style>
+</head>
+<body>
+
+<h2>1️⃣ Event Bubbling উদাহরণ</h2>
+<div id="parent">
+  Parent Div
+  <button id="childBtn">Click Me (Child)</button>
+</div>
+
+<h2>2️⃣ Event Delegation উদাহরণ</h2>
+<ul id="delegationParent">
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li>Item 3</li>
+</ul>
+<button id="addItem">Add New Item</button>
+
+<script>
+/********************************************************************
+ * Event Bubbling উদাহরণ
+ ********************************************************************/
+
+// Parent div element ধরছি
+var parent = document.getElementById("parent");
+
+// Child button element ধরছি
+var child = document.getElementById("childBtn");
+
+// Child button click event
+child.onclick = function() {
+    // Child element clicked হলে console এ log দেখাবে
+    console.log("Child button clicked");
+    // Child element clicked হলে alert দেখাবে
+    alert("Child button clicked (Bubbling Example)");
+};
+
+// Parent div click event
+parent.onclick = function() {
+    // Parent element clicked হলে console এ log দেখাবে (Bubbling এর কারণে child click এও trigger হবে)
+    console.log("Parent div clicked via bubbling");
+    // Parent element clicked হলে alert দেখাবে
+    alert("Parent div clicked (via Bubbling)");
+};
+
+/********************************************************************
+ * Event Delegation উদাহরণ
+ ********************************************************************/
+
+// UL element (parent) ধরছি
+var delegationParent = document.getElementById("delegationParent");
+
+// Parent element এ single click listener attach
+delegationParent.addEventListener("click", function(event) {
+    // event.target হলো যেটা click হয়েছে
+    if(event.target.tagName === "LI") { // যদি clicked element LI হয়
+        // console log দেখাবে কোন LI click হয়েছে
+        console.log("Delegation clicked on: " + event.target.innerHTML);
+        // alert দেখাবে কোন LI click হয়েছে
+        alert("Delegation clicked on: " + event.target.innerHTML);
+    }
+});
+
+/********************************************************************
+ * Dynamic element add করার জন্য
+ ********************************************************************/
+
+// Add button ধরছি
+var addBtn = document.getElementById("addItem");
+
+// নতুন item সংখ্যা শুরু
+var counter = 4;
+
+// Add button click event
+addBtn.onclick = function() {
+    // নতুন LI element create
+    var newLi = document.createElement("li");
+    // LI এর text set
+    newLi.textContent = "Item " + counter;
+    // LI add করা parent UL এর মধ্যে
+    delegationParent.appendChild(newLi);
+    // counter increment
+    counter++;
+};
+
+/********************************************************************
+ * Event Behavior ব্যাখ্যা (বাংলায়)
+ *
+ * 1️⃣ Bubbling:
+ *    - Child button click করলে প্রথম child handler run হবে
+ *    - তারপর parent handler automatic trigger হবে
+ *
+ * 2️⃣ Delegation:
+ *    - Parent UL element এ single listener
+ *    - কোন LI click করলে, parent handle করবে
+ *    - Dynamic LI add করলে ও কাজ করবে
+ ********************************************************************/
+
+ /********************************************************************
+ * 🔹 FRIENDLY NOTE:
+ *
+ * ✅ onclick → simple click event (older way)
+ * ✅ addEventListener → modern & allows multiple events
+ * ✅ mouseover / mouseout → hover effects
+ * ✅ input / onchange → input value changes
+ * ✅ keydown / keyup / keypress → keyboard interactions
+ * ✅ event delegation → parent handles many child events (dynamic friendly)
+ * ✅ event bubbling → child click triggers parent click automatically
+ * ✅ window events → load, resize, scroll
+ * ✅ removeEventListener → remove a previously attached event
+ *
+ * 💡 Pro Tip:
+ * Always use addEventListener for flexibility
+ * Event delegation is your best friend for dynamic elements
+ ********************************************************************/
+</script>
+
+</body>
+</html>
