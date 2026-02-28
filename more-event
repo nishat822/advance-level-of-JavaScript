@@ -1,0 +1,114 @@
+<!-- Filename: event-delegation-demo.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Delegation & Bubbling Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 8px 12px; margin: 4px 0; background: #f2f2f2; cursor: pointer; }
+        li:hover { background: #d9d9d9; }
+    </style>
+</head>
+<body>
+
+    <h2>Todo List Example (Event Delegation)</h2>
+
+    <input type="text" id="todo-input" placeholder="Enter task">
+    <button id="add-btn">Add Task</button>
+
+    <ul id="todo-list">
+        <!-- এখানে লিস্ট আইটেমগুলো ডাইনামিকভাবে যোগ হবে -->
+    </ul>
+
+    <script>
+        // ---------------------------
+        // 🔹 DOM Elements
+        // ---------------------------
+        const input = document.getElementById('todo-input'); // ইনপুট বক্স
+        const addBtn = document.getElementById('add-btn');   // এড বাটন
+        const todoList = document.getElementById('todo-list'); // UL লিস্ট
+
+        // ---------------------------
+        // 🔹 Add Task Function
+        // ---------------------------
+        addBtn.addEventListener('click', function() {
+            const text = input.value.trim();
+            if (text === "") return; // যদি ইনপুট খালি থাকে তাহলে কিছু হবে না
+
+            const li = document.createElement('li'); // নতুন লিস্ট আইটেম তৈরি
+            li.innerText = text; // টেক্সট সেট করা
+
+            todoList.appendChild(li); // UL তে যোগ করা
+
+            input.value = ""; // ইনপুট ক্লিয়ার করা
+        });
+
+        // ---------------------------
+        // 🔹 Event Delegation Example
+        // ---------------------------
+        todoList.addEventListener('click', function(event) {
+            // event.target = যেই লিস্ট আইটেমে ক্লিক হয়েছে
+            if (event.target.tagName === 'LI') {
+                // Event Bubbling দেখানোর জন্য console log
+                console.log('Clicked Item:', event.target.innerText);
+                console.log('Listener On (this):', this);
+
+                // ক্লিক করলে লিস্ট আইটেম রিমুভ হবে
+                event.target.remove();
+            }
+        });
+        // 🔹 Event Delegation for Single Click & Double Click
+        // ---------------------------
+        todoList.addEventListener('click', function(event) {
+            // শুধু LI তে ক্লিক হলে কাজ করবে
+            if (event.target.tagName === 'LI') {
+                // Single click → complete task
+                event.target.classList.toggle('completed');
+
+                // Console log দিয়ে bubbling দেখানো
+                console.log('Clicked Item:', event.target.innerText);
+                console.log('Listener On (this):', this); // UL
+            }
+        });
+
+        // ---------------------------
+        // 🔹 Double Click → Delete Task
+        // ---------------------------
+        todoList.addEventListener('dblclick', function(event) {
+            if (event.target.tagName === 'LI') {
+                event.target.remove();
+                console.log('Deleted Item:', event.target.innerText);
+            }
+        });
+
+        // ---------------------------
+        // 🔹 Explanation (Bangla)
+        // ---------------------------
+        /*
+            1️⃣ LI তে click হলে event bubble হয়ে UL এ আসে
+            2️⃣ আমরা UL এ listener বসিয়েছি → এটাকে Event Delegation বলে
+            3️⃣ Single click → toggle class 'completed' → টেক্সট green ও strike-through
+            4️⃣ Double click → delete item
+            5️⃣ event.target → আসল element যেটিতে click হয়েছে
+            6️⃣ this → listener কোথায় বসানো হয়েছে (UL)
+            7️⃣ নতুন LI add করলেও কাজ করবে কারণ listener শুধু parent UL এ আছে
+        */
+
+        // ---------------------------
+        // 🔹 Bubbling ব্যাখ্যা (Comment)
+        // ---------------------------
+        /*
+            এখানে বোঝা যায়:
+            1️⃣ LI তে click হয়
+            2️⃣ Event Bubble হয়ে UL (parent) এ চলে আসে
+            3️⃣ UL তে listener বসানো আছে
+            4️⃣ event.target বলে দেয় আসলে কোন element এ click হয়েছে
+            5️⃣ 'this' বলে দেয় listener কোন element এ বসানো হয়েছে (UL)
+        */
+    </script>
+
+</body>
+</html>
